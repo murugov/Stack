@@ -1,27 +1,27 @@
-#include "unit_test.h"
-#include "stdout.h"
-#include "square_solver.h"
-#include "choice_mode.h"
+#include "stack.h"
 
-int main(void)
+FILE *LogFile = fopen("ReportFiles/LogFile.log", "w");
+
+int main()
 {
-    int mode = choice_mode();
+    stk_t stk1 = {};
+    STACK_INIT(&stk1, 5);
 
-    if (mode == 'u')
-    {
-        printf(ANSI_COLOR_BLUE "###    This is a quadratic equation calculator              ###\n");
-        printf("###    Enter a, b, c separated by space or by enter         ###" ANSI_COLOR_RESET "\n");
+    //memset(&stk1, -1, sizeof (stk1));
+    
+    // printf("> stk1[%p]\n", (void*)(stk1.id.name));
+    // printf("> IsBadPtr(stk1) = %d\n", (int)IsBadPtr((void*)(stk1.id.name)));
 
-        struct parametrs user = {NAN, NAN, NAN, NAN, NAN};
-        
-        enter(&user);
+    StackPush(&stk1, 10);
+    StackPush(&stk1, 20);
+    StackPush(&stk1, 30);
 
-        int res = quadro_equation(&user);
+    stk_elem_t last_value = 0;
+    StackPop(&stk1, &last_value);
+    
+    StackDtor(&stk1);
 
-        output(res, &user);
-    }
-    else
-        test();
+    fclose(LogFile);
 
     return 0;
 }
