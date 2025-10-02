@@ -15,14 +15,16 @@ enum StackErr_t
 enum ErrCodes_t
 {
     WRONG_CANARY = 1,
-    BAD_STK_PTR = 2,
-    BAD_DATA_PTR = 4,
-    WRONG_SIZE = 8,
-    WRONG_CAPACITY = 16,
-    DATA_OVERFLOW = 32,
-    ACCESS_EMPTY_DATA = 64,
-    BAD_INCREASED_STK_PTR = 128,
-    WRONG_REALLOC = 256
+    WRONG_HASH = 2,
+    BAD_HASH_ARR_PTR = 4,
+    BAD_STK_PTR = 8,
+    BAD_DATA_PTR = 16,
+    WRONG_SIZE = 32,
+    WRONG_CAPACITY = 64,
+    DATA_OVERFLOW = 128,
+    ACCESS_EMPTY_DATA = 256,
+    BAD_INCREASED_STK_PTR = 512,
+    WRONG_REALLOC = 1024
 };
 
 enum StackFunc
@@ -38,13 +40,15 @@ enum StackFunc
 enum Canary
 {
     CANARY_1 = 111,
-    CANARY_2 = 222 
+    CANARY_2 = 222,
+    CANARY_3 = 333,
+    CANARY_4 = 444
 };
 
 typedef int stk_elem_t; //по определению
 typedef ssize_t cap_t;
 typedef ssize_t err_t;
-typedef int canary_t;
+typedef stk_elem_t canary_t;
 
 struct stack_id
 {
@@ -63,15 +67,17 @@ struct stack
     err_t error;
     struct stack_id id;
     canary_t canary_2 = CANARY_2;
+    size_t hash_index;
 };
 
 typedef stack stk_t;
 
 bool IsBadPtr(void* ptr);
 
-void StackInit(stk_t *stk, const char *name, const char *file, const char *func, size_t line);
+void Calc(FILE *stream);
+StackErr_t StackInit(stk_t *stk, const char *name, const char *file, const char *func, size_t line);
 StackErr_t ErrDetect(stk_t *stk, StackFunc IncomingFunc, const char *file, const char *func, size_t line);
-StackErr_t StackCtor(stk_t *stk, ssize_t size);
+StackErr_t StackCtor(stk_t *stk, cap_t capacity);
 StackErr_t StackDtor(stk_t *stk);
 void StackDump(stk_t *stk, const char *file, const char *func, size_t line);
 StackErr_t StackPop(stk_t *stk, stk_elem_t *last_value);

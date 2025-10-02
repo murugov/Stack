@@ -14,7 +14,7 @@ void StackDump(stk_t *stk, const char *file, const char *func, size_t line) //pa
         return;
     }
 
-    if (stk->canary_1 != CANARY_1 || stk->canary_2 != CANARY_2)
+    if (ERR_CHECK(WRONG_CANARY) == ERROR)
     {
         fprintf(LogFile, "---------------------------------------------------------------------------------------------------------------------------\n\n");
         
@@ -25,6 +25,22 @@ void StackDump(stk_t *stk, const char *file, const char *func, size_t line) //pa
         
         else
             fprintf(LogFile, "Stack <int> [%p] ERROR! WRONG_CANARY\n", stk);
+        
+        fprintf(LogFile, "\n---------------------------------------------------------------------------------------------------------------------------\n");
+        return;
+    }
+
+    if (ERR_CHECK(WRONG_HASH) == ERROR)
+    {
+        fprintf(LogFile, "---------------------------------------------------------------------------------------------------------------------------\n\n");
+        
+        fprintf(LogFile, "StackDump() from %s at %s:%zu: Bad stack at function\n", func, file, line);
+
+        if (!IS_BAD_PTR((*stk).id.name) && !IS_BAD_PTR((*stk).id.file) && !IS_BAD_PTR((*stk).id.func) && (*stk).id.line >= 0)
+            fprintf(LogFile, "Stack <int> \"%s\" [%p] from %s:%zu: ERROR! WRONG_HASH\n", (*stk).id.name + 1, stk, (*stk).id.file, (*stk).id.line);
+        
+        else
+            fprintf(LogFile, "Stack <int> [%p] ERROR! WRONG_HASH\n", stk);
         
         fprintf(LogFile, "\n---------------------------------------------------------------------------------------------------------------------------\n");
         return;
@@ -54,15 +70,19 @@ void StackDump(stk_t *stk, const char *file, const char *func, size_t line) //pa
 
     fprintf(LogFile, "\n");
 
-    if (ERR_CHECK(BAD_DATA_PTR) == SUCCESS && stk->capacity > 0 && stk->size > 0)
+    if (ERR_CHECK(BAD_DATA_PTR) == SUCCESS && stk->capacity > 2 && stk->size > 2)
     {
         fprintf(LogFile, "data[%p]\n", stk->data);
         fprintf(LogFile, "{\n");
 
-        for (size_t i = 0; i < (size_t)stk->capacity; ++i)
+        fprintf(LogFile, "\t[0] = CANARY\n");
+
+        for (size_t i = 1; i < (size_t)stk->capacity - 1; ++i)
         {
-            fprintf(LogFile, "\t%s[%zu] = %d\n", (i <= (size_t)stk->size) ? "*": "", i, stk->data[i]);
+            fprintf(LogFile, "\t%s[%zu] = %d\n", (i <= (size_t)stk->size - 2) ? "*": "", i, stk->data[i]);
         }
+
+        fprintf(LogFile, "\t[%zd] = CANARY\n", stk->capacity - 1);
 
         fprintf(LogFile, "}\n");
     }

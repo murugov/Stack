@@ -9,6 +9,6 @@ StackErr_t ErrDetect(stk_t *stk, StackFunc IncomingFunc, const char *file, const
         StackDump(stk, file, func, line);
         return ERROR;
     }
-
+    
     return SUCCESS;
 }

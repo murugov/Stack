@@ -1,4 +1,5 @@
 #include "stack.h"
+#include "hash.h"
 
 StackErr_t StackDtor(stk_t *stk)
 {
@@ -6,6 +7,7 @@ StackErr_t StackDtor(stk_t *stk)
         return ERROR;
 
     free(stk->data);
+    free(&(hash_arr[stk->hash_index]));
 
     return SUCCESS;
 }

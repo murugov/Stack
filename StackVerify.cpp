@@ -1,4 +1,5 @@
 #include "stack.h"
+#include "hash.h"
 
 StackErr_t StackVerify(stk_t *stk, StackFunc IncomingFunc)
 {
@@ -13,19 +14,31 @@ StackErr_t StackVerify(stk_t *stk, StackFunc IncomingFunc)
         return ERROR;
     }
 
+    if (IncomingFunc != STK_CTOR && IncomingFunc != STK_POP && HashFunc(stk) != hash_arr[stk->hash_index])
+    {
+        stk->error |= WRONG_HASH;
+        return ERROR;
+    }
+
+    if (IncomingFunc != STK_CTOR && !IS_BAD_PTR(stk->data) && (stk->data[0] != CANARY_3 || (stk->capacity > 0 && stk->data[stk->capacity - 1] != CANARY_4)))
+    {
+        stk->error |= WRONG_CANARY;
+        return ERROR;
+    }
+
     if (IS_BAD_PTR(stk->data) && IncomingFunc != STK_PUSH && IncomingFunc != STK_CTOR)
         stk->error |= BAD_DATA_PTR;
 
-    if (stk->size < 0 && IncomingFunc != STK_POP)
+    if (stk->size < 2 && IncomingFunc != STK_POP)
         stk->error |= WRONG_SIZE;
 
-    if (stk->capacity < 0)
+    if (stk->capacity < 2)
         stk->error |= WRONG_CAPACITY;
 
     if (stk->size >= stk->capacity)
         stk->error |= DATA_OVERFLOW;
 
-    if (stk->size < 0 && IncomingFunc == STK_POP)
+    if (stk->size < 2 && IncomingFunc == STK_POP)
         stk->error |= ACCESS_EMPTY_DATA;
 
     if (IS_BAD_PTR(stk->data) && IncomingFunc == STK_PUSH)
