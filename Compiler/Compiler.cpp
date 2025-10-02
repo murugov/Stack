@@ -39,33 +39,3 @@ AsmErr_t Compiler() // добавить адресс буффера
 
     return SUCCESS;
 }
-
-
-
-
-
-
-
-
-
-    // char *cmd_PUSH = "PUSH";
-    // char *cmd_ADD = "ADD";
-    // char *cmad_SUB = "SUB";
-    // char *cmd_MUL = "MUL";
-    // char *cmd_DIV = "DIV";
-    // char *cmd_POW = "POW";
-    // char *cmd_MOD = "MOD";
-    // char *cmd_SQRT = "SQRT";
-    // char *cmd_OUT = "OUT";
-    // char *cmd_HLT = "HLT";
-
-    // printf("%zu\n", HashCmd(cmd_PUSH));
-    // printf("%zu\n", HashCmd(cmd_ADD));
-    // printf("%zu\n", HashCmd(cmad_SUB));
-    // printf("%zu\n", HashCmd(cmd_MUL));
-    // printf("%zu\n", HashCmd(cmd_DIV));
-    // printf("%zu\n", HashCmd(cmd_POW));
-    // printf("%zu\n", HashCmd(cmd_MOD));
-    // printf("%zu\n", HashCmd(cmd_SQRT));
-    // printf("%zu\n", HashCmd(cmd_OUT));
-    // printf("%zu\n", HashCmd(cmd_HLT));

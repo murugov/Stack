@@ -74,7 +74,6 @@ typedef stack stk_t;
 
 bool IsBadPtr(void* ptr);
 
-void Calc(FILE *stream);
 StackErr_t StackInit(stk_t *stk, const char *name, const char *file, const char *func, size_t line);
 StackErr_t ErrDetect(stk_t *stk, StackFunc IncomingFunc, const char *file, const char *func, size_t line);
 StackErr_t StackCtor(stk_t *stk, cap_t capacity);

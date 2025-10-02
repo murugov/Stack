@@ -2,7 +2,7 @@ FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Wc++14-compat -W
 
 INCLUDES = -I./headers
 
-STK_FILES = ErrDetect.cpp HashFunc.cpp IsBadPtr.cpp StackCtor.cpp StackDtor.cpp StackDump.cpp StackInit.cpp StackPop.cpp StackPush.cpp StackRealloc.cpp StackVerify.cpp
+STK_FILES = Compiler/ArrPtrCtor.cpp Compiler/CmdNumber.cpp Compiler/SizeFile.cpp Calculator.cpp HashFunc.cpp IsBadPtr.cpp StackDump.cpp StackFunc.cpp StackVerify.cpp
 
 all: help
 
@@ -22,7 +22,7 @@ run-user: user
 run-test: test
 	./test_program
 
-run: run-user
+run: run-test
 
 clean:
 	rm -f user_program test_program

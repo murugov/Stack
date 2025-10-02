@@ -1,5 +1,5 @@
 #include "stack.h"
-#include "my_logger.h"
+#include "files.h"
 
 void StackDump(stk_t *stk, const char *file, const char *func, size_t line) //parametr for data
 {
