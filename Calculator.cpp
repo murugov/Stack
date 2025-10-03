@@ -2,11 +2,15 @@
 #include "stack.h"
 #include "task.h"
 #include "files.h"
+#include "colors.h"
 
 TaskErr_t Calculator(FILE *stream)
 {
     stk_t stk = {};
     STACK_INIT(&stk, 32);
+
+    if (stk.error != SUCCESS)
+        return WRONG_STK;
 
     if (IS_BAD_PTR(TaskFile))
         return BAD_INPUT_FILE_PTR;
@@ -118,7 +122,7 @@ TaskErr_t CalcFunc(stk_t *stk, char *ptr, cmd_t cmd)
         case Inv_cmd_OUT:
             StackPop(stk, &number_1);
 
-            printf("OUT: %d\n", number_1);
+            printf(ANSI_COLOR_GREEN "OUT: %d\n" ANSI_COLOR_RESET, number_1);
             break;
 
         case Inv_cmd_HLT:

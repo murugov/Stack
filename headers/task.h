@@ -2,6 +2,7 @@
 #define TASK_FILE_H
 
 #include <stdio.h>
+#include "stack.h"
 
 enum TaskErr_t
 {
@@ -12,7 +13,8 @@ enum TaskErr_t
     WRONG_FILE_INFO = -3,
     BUFFER_FAIL = -4,
     BAD_ARR_PTR = -5,
-    UNKNOWN_CMD = -6
+    UNKNOWN_CMD = -6,
+    WRONG_STK = -7
 };
 
 enum InvCmdCode
@@ -37,5 +39,6 @@ size_t CmdNumber(char* buffer);
 void ArrPtrCtor(char *buffer, char **arr_ptr);
 TaskErr_t CalcExecutor(stk_t *stk, char **arr_ptr, size_t count_n);
 TaskErr_t CalcFunc(stk_t *stk, char *ptr, cmd_t cmd);
+void CalcErrPrint(TaskErr_t verd);
 
 #endif

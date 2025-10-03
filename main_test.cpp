@@ -6,7 +6,9 @@ FILE *TaskFile = fopen("Compiler/CompileFiles/task.asm", "r");
 
 int main()
 {
-    Calculator(TaskFile);
+    TaskErr_t calc_verd = Calculator(TaskFile);
+
+    CalcErrPrint(calc_verd);
 
     fclose(LogFile);
     fclose(TaskFile);

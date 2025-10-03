@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "compile.h"
-#include "GlobalFiles.h"
+#include "files_comp.h"
 
 AsmErr_t Compiler() // добавить адресс буффера
 {

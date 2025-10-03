@@ -1,5 +1,6 @@
 #include "compile.h"
-#include "GlobalFiles.h"
+#include "files_comp.h"
+#include "colors.h"
 
 AsmErr_t TaskWriter(commands *cmds, const char *ptr, hash_t func)
 {
@@ -53,7 +54,7 @@ AsmErr_t TaskWriter(commands *cmds, const char *ptr, hash_t func)
         case cmd_HLT:
             cmds->cmd = Inv_cmd_HLT;
             cmds->body = "\0";
-            break;
+            return END_FILE; 
 
         default:
             return UNKNOWN_CMD;
@@ -69,14 +70,31 @@ AsmErr_t assembly(char **arr_ptr, size_t count_n)
     for (size_t i = 0; i < count_n; ++i)
     {
         hash_t func = HashCmd(arr_ptr[i]);
-        if (TaskWriter(&cmds[i], arr_ptr[i], func))
+
+        AsmErr_t write_verd = TaskWriter(&cmds[i], arr_ptr[i], func);
+        if (write_verd == ERROR)
+        {
+            free(cmds);
             return ERROR;
+        }
+
+        if (write_verd == UNKNOWN_CMD)
+        {
+            printf(ANSI_COLOR_RED "Unknown command in source.asm:%zu\n" ANSI_COLOR_RESET, i + 1); // return line
+            free(cmds);
+            return ERROR;
+        }
+
+        if (write_verd == END_FILE)
+        {
+            count_n = i + 1;
+            break;
+        }
     }
 
     for (size_t i = 0; i < count_n; ++i)
         fprintf(TaskFile, "%d%s\n", cmds[i].cmd, cmds[i].body);
 
-    
     free(cmds);
         
     return SUCCESS;

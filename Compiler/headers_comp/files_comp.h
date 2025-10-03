@@ -1,5 +1,5 @@
-#ifndef GLOBAL_FILES_H
-#define GLOBAL_FILES_H
+#ifndef FILES_COMP_H
+#define FILES_COMP_H
 
 #include <stdio.h>
 

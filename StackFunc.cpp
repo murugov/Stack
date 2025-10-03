@@ -25,7 +25,7 @@ StackErr_t StackCtor(stk_t *stk, cap_t capacity)
 
     if (ERR_DETECT(stk, STK_CTOR))
         return ERROR;
-
+    
     stk->data = (stk_elem_t *)calloc((size_t)capacity + 2, sizeof(stk_elem_t));
 
     if (ERR_DETECT(stk, STK_CTOR))

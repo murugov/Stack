@@ -1,7 +1,7 @@
-#include "compile.h"
+#include "task.h"
 #include "colors.h"
 
-void ErrPrint(AsmErr_t verd)
+void CalcErrPrint(TaskErr_t verd)
 {
     switch (verd)
     {
@@ -26,17 +26,18 @@ void ErrPrint(AsmErr_t verd)
             break;
 
         case UNKNOWN_CMD:
+            perror(ANSI_COLOR_RED "Unknown command in source.asm!\n" ANSI_COLOR_RESET); // return line
             break;
 
-        case END_FILE:
-            printf(ANSI_COLOR_GREEN "SUCSESS\n" ANSI_COLOR_RESET);
+        case WRONG_STK:
+            printf(ANSI_COLOR_RED "Error occurred while creating the stack\n" ANSI_COLOR_RESET);
             break;
             
-        case SUCCESS:
+        case TASK_SUCCESS:
             printf(ANSI_COLOR_GREEN "SUCSESS\n" ANSI_COLOR_RESET);
             break;
 
-        case ERROR:
+        case TASK_ERROR:
             break;
 
         default:

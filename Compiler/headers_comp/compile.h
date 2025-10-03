@@ -13,7 +13,8 @@ enum AsmErr_t
     WRONG_FILE_INFO = -3,
     BUFFER_FAIL = -4,
     BAD_ARR_PTR = -5,
-    UNKNOWN_CMD = -6
+    UNKNOWN_CMD = -6,
+    END_FILE = -7
 };
 
 enum CmdCode
