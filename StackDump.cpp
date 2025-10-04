@@ -1,7 +1,7 @@
 #include "stack.h"
 #include "files.h"
 
-void StackDump(stk_t *stk, const char *file, const char *func, size_t line) //parametr for data
+void StackDump(stk_t *stk, const char *file, const char *func, size_t line)
 {
     if (IS_BAD_PTR(stk))
     {

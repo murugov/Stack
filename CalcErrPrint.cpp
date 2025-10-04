@@ -32,7 +32,19 @@ void CalcErrPrint(TaskErr_t verd)
         case WRONG_STK:
             printf(ANSI_COLOR_RED "Error occurred while creating the stack\n" ANSI_COLOR_RESET);
             break;
+
+        case SIGNVERSVER:
+            printf(ANSI_COLOR_RED "The signature or version of the source file does not match!\n" ANSI_COLOR_RESET);
+            break;     
+
+        case DIV_BY_ZERO:
+            printf(ANSI_COLOR_RED "Division by zero!\n" ANSI_COLOR_RESET);
+            break;   
             
+        case STOP_BY_HLT:
+            printf(ANSI_COLOR_GREEN "Stop by HLT: SUCCESS\n" ANSI_COLOR_RESET);
+            break;
+
         case TASK_SUCCESS:
             printf(ANSI_COLOR_GREEN "SUCSESS\n" ANSI_COLOR_RESET);
             break;

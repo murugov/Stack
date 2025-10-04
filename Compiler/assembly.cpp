@@ -2,98 +2,93 @@
 #include "files_comp.h"
 #include "colors.h"
 
-AsmErr_t TaskWriter(commands *cmds, const char *ptr, hash_t func)
+AsmErr_t TaskWriter(proc_elem *cmds, const char *ptr, hash_t func, size_t *counter)
 {
     switch (func)
     {
         case cmd_PUSH:
-            cmds->cmd = Inv_cmd_PUSH;
-            cmds->body = &ptr[4];
+            cmds[*counter] = Inv_cmd_PUSH;
+            (*counter)++;
+            sscanf(ptr, "%*s %d ", &cmds[*counter]);
             break;
 
         case cmd_ADD:
-            cmds->cmd = Inv_cmd_ADD;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_ADD;
             break;
 
         case cmd_SUB:
-            cmds->cmd = Inv_cmd_SUB;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_SUB;
             break;
 
         case cmd_MUL:
-            cmds->cmd = Inv_cmd_MUL;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_MUL;
             break;
 
         case cmd_DIV:
-            cmds->cmd = Inv_cmd_DIV;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_DIV;
             break;
 
         case cmd_POW:
-            cmds->cmd = Inv_cmd_POW;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_POW;
             break;
 
         case cmd_MOD:
-            cmds->cmd = Inv_cmd_MOD;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_MOD;
             break;
 
         case cmd_SQRT:
-            cmds->cmd = Inv_cmd_SQRT;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_SQRT;
             break;
-
+            
         case cmd_OUT:
-            cmds->cmd = Inv_cmd_OUT;
-            cmds->body = "\0";
+            cmds[*counter] = Inv_cmd_OUT;
             break;
 
         case cmd_HLT:
-            cmds->cmd = Inv_cmd_HLT;
-            cmds->body = "\0";
-            return END_FILE; 
+            cmds[*counter] = Inv_cmd_HLT;
+            break; 
 
         default:
             return UNKNOWN_CMD;
     }
+    
+    (*counter)++;
 
     return SUCCESS;
 }
 
 AsmErr_t assembly(char **arr_ptr, size_t count_n)
 {
-    commands *cmds = (commands*)calloc(count_n + 1, sizeof(commands));
+    proc_elem *cmds = (proc_elem*)calloc(count_n * 2, sizeof(proc_elem));
+
+    size_t counter = 0;
 
     for (size_t i = 0; i < count_n; ++i)
     {
         hash_t func = HashCmd(arr_ptr[i]);
 
-        AsmErr_t write_verd = TaskWriter(&cmds[i], arr_ptr[i], func);
-        if (write_verd == ERROR)
-        {
-            free(cmds);
-            return ERROR;
-        }
+        AsmErr_t write_verd = TaskWriter(cmds, arr_ptr[i], func, &counter);
+
+        // if (write_verd == ERROR)
+        // {
+        //     free(cmds);
+        //     return ERROR;
+        // }
 
         if (write_verd == UNKNOWN_CMD)
         {
-            printf(ANSI_COLOR_RED "Unknown command in source.asm:%zu\n" ANSI_COLOR_RESET, i + 1); // return line
+            printf(ANSI_COLOR_RED "Unknown command in source.asm:%zu\n" ANSI_COLOR_RESET, i + 1); // return file
             free(cmds);
             return ERROR;
         }
-
-        if (write_verd == END_FILE)
-        {
-            count_n = i + 1;
-            break;
-        }
     }
 
-    for (size_t i = 0; i < count_n; ++i)
-        fprintf(TaskFile, "%d%s\n", cmds[i].cmd, cmds[i].body);
+    const char* signature = SIGNATURE;
+    short version = VERSION;
+
+    fwrite(signature, 2, sizeof(char), TaskFile);
+    fwrite(&version, 1, sizeof(short), TaskFile);
+    fwrite(cmds, counter, sizeof(proc_elem), TaskFile);
 
     free(cmds);
         

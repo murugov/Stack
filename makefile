@@ -4,18 +4,13 @@ ASM_INCLUDES = -I./Compiler/headers_comp
 STK_INCLUDES = -I./headers
 
 ASM_FILES = Compiler/ArrPtrCtor.cpp Compiler/assembly.cpp Compiler/CmdNumber.cpp Compiler/Compiler.cpp Compiler/ErrPrint.cpp Compiler/HashCmd.cpp IsBadPtr.cpp Compiler/SizeFile.cpp
-STK_FILES = Compiler/ArrPtrCtor.cpp Compiler/CmdNumber.cpp Compiler/SizeFile.cpp CalcErrPrint.cpp Calculator.cpp HashFunc.cpp IsBadPtr.cpp StackDump.cpp StackFunc.cpp StackVerify.cpp
+STK_FILES = Compiler/SizeFile.cpp CalcErrPrint.cpp Calculator.cpp HashFunc.cpp IsBadPtr.cpp StackDump.cpp StackFunc.cpp StackVerify.cpp
 
 all: help
 
 comp: Compiler/main_comp.cpp $(ASM_FILES)
 	@echo "-----------------------------------------------------------------------------------------"
 	g++ $(FLAGS) Compiler/main_comp.cpp $(ASM_FILES) $(ASM_INCLUDES) -o comp_program
-	@echo "-----------------------------------------------------------------------------------------"
-
-user: main_user.cpp $(STK_FILES)
-	@echo "-----------------------------------------------------------------------------------------"
-	g++ $(FLAGS) main_user.cpp $(STK_FILES) $(STK_INCLUDES) $(ASM_INCLUDES) -o user_program
 	@echo "-----------------------------------------------------------------------------------------"
 
 test: main_test.cpp $(STK_FILES)
@@ -26,26 +21,19 @@ test: main_test.cpp $(STK_FILES)
 run-comp: comp
 	./comp_program
 
-run-user: user
-	./user_program
-
 run-test: test
 	./test_program
 
 run: run-test
 
 clean:
-	rm -f user_program test_program
+	rm -f comp_program test_program
 
 help:
 	@echo "Available commands:"
 	@echo "  make comp      - compile a compiler (main_comp.cpp)"
-	@echo "  make user      - compile a user version (main_user.cpp)"
 	@echo "  make test      - compile a test version (main_test.cpp)"
 	@echo "  make run-comp  - compile and run the compiler"
-	@echo "  make run-user  - compile and run the user version"
 	@echo "  make run-test  - compile and run the test version"
-	@echo "  make run       - compile and run the user version (default)"
+	@echo "  make run       - compile and run the test version (default)"
 	@echo "  make clean     - remove compiled programs"
-
-.PHONY: all user test run-user run-test run both clean help

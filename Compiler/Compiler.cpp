@@ -2,7 +2,7 @@
 #include "compile.h"
 #include "files_comp.h"
 
-AsmErr_t Compiler() // добавить адресс буффера
+AsmErr_t Compiler()
 {
     if (IS_BAD_PTR(SourceFile))
         return BAD_INPUT_FILE_PTR;
@@ -17,21 +17,25 @@ AsmErr_t Compiler() // добавить адресс буффера
 
     char* buffer = (char*)calloc((size_t)file_size + 2, sizeof(char));
     if (IS_BAD_PTR(buffer))
-        return BUFFER_FAIL;
+        return BAD_BUFFER_PTR;
 
     size_t capacity = fread(buffer, sizeof(char), (size_t)file_size, SourceFile);
     buffer[capacity] = '\0';
 
     size_t count_n = CmdNumber(buffer);
 
+    if (count_n == 0)
+        return CMD_NUM_FAIL;
+
     char **arr_ptr = (char**)calloc(count_n + 1, sizeof(char*));
     
     if (IS_BAD_PTR(arr_ptr))
         return BAD_ARR_PTR;
+
+    if (ArrPtrCtor(buffer, arr_ptr) == BAD_BUFFER_PTR)
+        return BAD_BUFFER_PTR;
     
-    ArrPtrCtor(buffer, arr_ptr);
-    
-    if (assembly(arr_ptr, count_n + 1))
+    if (assembly(arr_ptr, count_n))
         return UNKNOWN_CMD;
 
     free(buffer);

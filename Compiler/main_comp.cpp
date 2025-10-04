@@ -1,8 +1,7 @@
 #include "compile.h"
 
-FILE *SourceFile = fopen("Compiler/CompileFiles/source.asm", "r");
-FILE *TaskFile = fopen("Compiler/CompileFiles/task.asm", "w");
-
+FILE *SourceFile = fopen("Compiler/CompileFiles/source.asm", "rb");
+FILE *TaskFile = fopen("Compiler/CompileFiles/task.asm", "wb");
 
 int main()
 {

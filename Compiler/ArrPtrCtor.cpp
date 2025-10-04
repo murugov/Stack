@@ -1,27 +1,50 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "compile.h"
 
-void ArrPtrCtor(char *buffer, char **arr_ptr) // можно написать доп проверку
+AsmErr_t ArrPtrCtor(char *buffer, char **arr_ptr)
 {
-    size_t count_n = 0;
-    arr_ptr[count_n++] = buffer; 
-
-    char* str = buffer;
-    char* flag_second_n = buffer - 1;
-
-    while ((str = strchr(str, '\n')) != NULL)
+    if (IS_BAD_PTR(buffer))
+        return BAD_BUFFER_PTR;
+    
+    size_t count = 0;
+    char* line_start = buffer;
+    char* next_n = buffer;
+    
+    while ((next_n = strchr(line_start, '\n')) != NULL)
     {
-        if (flag_second_n + 1 == str)
-            flag_second_n++;
+        int has_content = 0;
 
-        else
+        for (char* ptr = line_start; ptr < next_n; ++ptr)
         {
-            *str = '\0';
-            arr_ptr[count_n++] = str + 1;
-            flag_second_n = str;
+            if (!isspace((unsigned char)*ptr))
+            {
+                has_content = 1;
+                arr_ptr[count] = ptr;
+                break;
+            }
         }
+        
+        if (has_content)
+            count++;
+        
+        line_start = next_n + 1;
 
-        str++;
+        *next_n = '\0';
     }
+    
+    if (*line_start != '\0')
+    {
+        for (char* ptr = line_start; *ptr != '\0'; ++ptr)
+        {
+            if (!isspace((unsigned char)*ptr)) 
+            {
+                arr_ptr[count++] = ptr;
+                break;
+            }
+        }
+    }
+
+    return SUCCESS;
 }

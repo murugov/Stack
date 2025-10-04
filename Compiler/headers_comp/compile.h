@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define SIGNATURE "AM"
+#define VERSION 1
+
 enum AsmErr_t
 {
     ERROR = 1,
@@ -11,10 +14,10 @@ enum AsmErr_t
     BAD_INPUT_FILE_PTR = -1,
     BAD_OUTPUT_FILE_PTR = -2,
     WRONG_FILE_INFO = -3,
-    BUFFER_FAIL = -4,
+    BAD_BUFFER_PTR = -4,
     BAD_ARR_PTR = -5,
     UNKNOWN_CMD = -6,
-    END_FILE = -7
+    CMD_NUM_FAIL = -7
 };
 
 enum CmdCode
@@ -45,20 +48,14 @@ enum InvCmdCode
     Inv_cmd_HLT = 10
 };
 
-typedef int calc_elem;
+typedef int proc_elem;
 typedef size_t hash_t;
-
-struct commands
-{
-    InvCmdCode cmd;
-    const char *body;
-};
 
 bool IsBadPtr(void* ptr);
 ssize_t SizeFile(FILE* stream);
 size_t CmdNumber(char* buffer);
 AsmErr_t Compiler();
-void ArrPtrCtor(char *buffer, char **arr_ptr);
+AsmErr_t ArrPtrCtor(char *buffer, char **arr_ptr);
 AsmErr_t assembly(char **arr_ptr, size_t count_n);
 hash_t HashCmd(char *buffer);
 AsmErr_t HashArrCtor();

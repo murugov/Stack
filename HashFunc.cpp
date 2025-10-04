@@ -4,7 +4,7 @@ hash_t *hash_arr = {};
 static size_t hash_arr_cap = 0;
 static size_t hash_arr_size = 0;
 
-hash_t HashFunc(stk_t *stk)
+hash_t HashFunc(stk_t *stk) //по байтам структуру
 {
     hash_t new_hash = 0;
 
@@ -24,22 +24,6 @@ hash_t HashFunc(stk_t *stk)
     new_hash = (new_hash << 5) - new_hash + (hash_t)(stk->capacity);
 
     new_hash = (new_hash << 5) - new_hash + (hash_t)(stk->canary_2);
-
-    return new_hash;
-}
-
-hash_t HashCmd(char *cmd)
-{
-    hash_t new_hash = 0;
-
-    if (IS_BAD_PTR(cmd))
-        return new_hash;
-
-    while (*cmd != ' ' && *cmd != '\0')
-    {
-        new_hash = (new_hash << 5) - new_hash + (hash_t)(*cmd);
-        cmd++;
-    }
 
     return new_hash;
 }

@@ -1,8 +1,8 @@
 #include "stack.h"
 #include "task.h"
 
-FILE *LogFile = fopen("ReportFiles/LogFile.log", "w");
-FILE *TaskFile = fopen("Compiler/CompileFiles/task.asm", "r");
+FILE *LogFile = fopen("ReportFiles/LogFile.log", "wb");
+FILE *TaskFile = fopen("Compiler/CompileFiles/task.asm", "rb");
 
 int main()
 {

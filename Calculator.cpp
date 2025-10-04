@@ -7,7 +7,7 @@
 TaskErr_t Calculator(FILE *stream)
 {
     stk_t stk = {};
-    STACK_INIT(&stk, 32);
+    STACK_INIT(&stk, 8);
 
     if (stk.error != SUCCESS)
         return WRONG_STK;
@@ -16,59 +16,59 @@ TaskErr_t Calculator(FILE *stream)
         return BAD_INPUT_FILE_PTR;
 
     ssize_t file_size = SizeFile(stream);
-    
     if (file_size < 0)
         return WRONG_FILE_INFO;
 
-    char* buffer = (char*)calloc((size_t)file_size + 2, sizeof(char));
+    char* buffer = (char*)calloc((size_t)file_size + 1, sizeof(char));
     if (IS_BAD_PTR(buffer))
         return BUFFER_FAIL;
 
     size_t capacity = fread(buffer, sizeof(char), (size_t)file_size, stream);
-    buffer[capacity] = '\0';
+    if (SignVersVerify(buffer))
+        return SIGNVERSVER;
 
-    size_t count_n = CmdNumber(buffer);
+    size_t count_cmd = (capacity - sizeof(proc_elem_t)) / sizeof(proc_elem_t);
 
-    char **arr_ptr = (char**)calloc(count_n + 1, sizeof(char*));
-    
-    if (IS_BAD_PTR(arr_ptr))
-        return BAD_ARR_PTR;
-    
-    ArrPtrCtor(buffer, arr_ptr);
-
-    CalcExecutor(&stk, arr_ptr, count_n);
+    if (CalcExecutor(&stk, (int*)buffer, count_cmd))
+    {
+        free(buffer);
+        StackDtor(&stk);
+        return TASK_ERROR;
+    }
 
     free(buffer);
-    free(arr_ptr);
     StackDtor(&stk);
 
     return TASK_SUCCESS;
 }
 
-TaskErr_t CalcExecutor(stk_t *stk, char **arr_ptr, size_t count_n)
+TaskErr_t CalcExecutor(stk_t *stk, int *buffer, size_t count_cmd)
 {
-    for (size_t i = 0; i < count_n; ++i)
-    {
-        cmd_t cmd = 0;
-        sscanf(arr_ptr[i], "%d ", &cmd);
 
-        CalcFunc(stk, arr_ptr[i], cmd);
+    for (size_t number_cmd = 1; number_cmd < count_cmd; ++number_cmd)
+    {
+        TaskErr_t calc_verd = CalcFunc(stk, buffer, &number_cmd);
+        if (calc_verd == STOP_BY_HLT)
+            return TASK_SUCCESS;
+
+        if (calc_verd == UNKNOWN_CMD)
+            return UNKNOWN_CMD;
     }
  
     return TASK_SUCCESS;
 }
 
-TaskErr_t CalcFunc(stk_t *stk, char *ptr, cmd_t cmd)
+TaskErr_t CalcFunc(stk_t *stk, int *buffer, size_t *number_cmd)
 {
-    stk_elem_t number_1 = 0;
-    stk_elem_t number_2 = 0;
+    proc_elem_t number_1 = 0;
+    proc_elem_t number_2 = 0;
 
-    switch (cmd)
+    switch (buffer[*number_cmd])
     {
         case Inv_cmd_PUSH:
-            sscanf(ptr, "%d %d ", &cmd, &number_1);
+            StackPush(stk, buffer[*number_cmd + 1]);
 
-            StackPush(stk, number_1);
+            (*number_cmd)++;
             break;
 
         case Inv_cmd_ADD:
@@ -96,7 +96,11 @@ TaskErr_t CalcFunc(stk_t *stk, char *ptr, cmd_t cmd)
             StackPop(stk, &number_1);
             StackPop(stk, &number_2);
 
-            StackPush(stk, number_2 / number_1);
+            if (number_1 != 0)
+                StackPush(stk, number_2 / number_1);
+
+            else
+                return DIV_BY_ZERO;
             break;
 
         case Inv_cmd_POW:
@@ -126,11 +130,21 @@ TaskErr_t CalcFunc(stk_t *stk, char *ptr, cmd_t cmd)
             break;
 
         case Inv_cmd_HLT:
-            break;
+            return STOP_BY_HLT;
 
         default:
             return UNKNOWN_CMD;
     }
+
+    return TASK_SUCCESS;
+}
+
+TaskErr_t SignVersVerify(char* buffer)
+{
+    const char* signature = SIGNATURE;
+    short version = VERSION;
+    if (signature[0] != buffer[0] || signature[1] != buffer[1] || version != (buffer[2] + buffer[3] * 64))
+        return TASK_ERROR;
 
     return TASK_SUCCESS;
 }

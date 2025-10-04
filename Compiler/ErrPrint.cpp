@@ -17,21 +17,21 @@ void ErrPrint(AsmErr_t verd)
             perror(ANSI_COLOR_RED "Error getting file information!\n" ANSI_COLOR_RESET);
             break;
 
-        case BUFFER_FAIL:
-            perror(ANSI_COLOR_RED "Error creating buffer!\n" ANSI_COLOR_RESET);
+        case BAD_BUFFER_PTR:
+            perror(ANSI_COLOR_RED "Bad buffer pointer!\n" ANSI_COLOR_RESET);
             break;
 
         case BAD_ARR_PTR:
             perror(ANSI_COLOR_RED "Bad arr_ptr's pointer!\n" ANSI_COLOR_RESET);
             break;
 
+        case CMD_NUM_FAIL:
+            perror(ANSI_COLOR_RED "Incorrect number of commands!\n" ANSI_COLOR_RESET);
+            break;
+
         case UNKNOWN_CMD:
             break;
 
-        case END_FILE:
-            printf(ANSI_COLOR_GREEN "SUCSESS\n" ANSI_COLOR_RESET);
-            break;
-            
         case SUCCESS:
             printf(ANSI_COLOR_GREEN "SUCSESS\n" ANSI_COLOR_RESET);
             break;

@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include "stack.h"
 
+#define SIGNATURE "AM"
+#define VERSION 1
+
 enum TaskErr_t
 {
     TASK_ERROR = 1,
@@ -14,7 +17,10 @@ enum TaskErr_t
     BUFFER_FAIL = -4,
     BAD_ARR_PTR = -5,
     UNKNOWN_CMD = -6,
-    WRONG_STK = -7
+    WRONG_STK = -7,
+    SIGNVERSVER = -8,
+    DIV_BY_ZERO = -9,
+    STOP_BY_HLT = -10
 };
 
 enum InvCmdCode
@@ -32,13 +38,13 @@ enum InvCmdCode
 };
 
 typedef int cmd_t;
+typedef int proc_elem_t;
 
 TaskErr_t Calculator(FILE *stream);
 ssize_t SizeFile(FILE* stream);
-size_t CmdNumber(char* buffer);
-void ArrPtrCtor(char *buffer, char **arr_ptr);
-TaskErr_t CalcExecutor(stk_t *stk, char **arr_ptr, size_t count_n);
-TaskErr_t CalcFunc(stk_t *stk, char *ptr, cmd_t cmd);
+TaskErr_t SignVersVerify(char* buffer);
+TaskErr_t CalcExecutor(stk_t *stk, int *buffer, size_t count_cmd);
+TaskErr_t CalcFunc(stk_t *stk, int *buffer, size_t *number_cmd);
 void CalcErrPrint(TaskErr_t verd);
 
 #endif
