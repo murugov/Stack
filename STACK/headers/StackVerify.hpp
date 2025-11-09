@@ -51,7 +51,7 @@ StackErr_t StackVerify(stk_t<stackElem_T> *stk, StackFunc IncomingFunc)
     {
         for(ssize_t i = stk->size - 1; i < stk->capacity - 1; ++i)
         {
-            if (stk->data[i] != POISON) { stk->error |= STK_WRONG_POISON_VAL; break; }
+            if (stk->data[i] != STK_POISON) { stk->error |= STK_WRONG_POISON_VAL; break; }
         }
     }
 

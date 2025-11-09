@@ -5,7 +5,7 @@
 
 
 template <typename stackElem_T>
-StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func, int line)
+StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char * func, int line)
 {
     ON_DEBUG( if (IS_BAD_PTR(stk)) { LOG(ERROR, ERR_MSG_FORMAT("STK_BAD_STK_PTR"), ERR_MSG_PARAMS); return STK_ERROR; } )
 
@@ -30,25 +30,33 @@ StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func
 
         char str_value[32] = {0};
 
-        fprintf(LogFile, "DUMP stack \"%s\" [%p] from %s at %s:%d:\n", stk->id.name, stk, func, file, line);
-        fprintf(LogFile, "{\n");
+        fprintf(LogFile, "DUMP stack \"%s\" [%p] from %s at %s:%d:\n\n", stk->id.name, stk, func, file, line);
+
+        fprintf(LogFile, "STK_POISON = %d\n\n", STK_POISON);
+
+        fprintf(LogFile, "STK_CANARY_1 = %d\n", STK_CANARY_1);
+        fprintf(LogFile, "STK_CANARY_2 = %d\n", STK_CANARY_2);  
+        fprintf(LogFile, "STK_CANARY_3 = %d\n", STK_CANARY_3);
+        fprintf(LogFile, "STK_CANARY_4 = %d\n\n", STK_CANARY_4);
+
+        fprintf(LogFile, "%s {\n", stk->id.name);
 
         snprintf(str_value, sizeof(str_value), FORMAT_SPECIFIER(stk->canary_1), stk->canary_1);
-        fprintf(LogFile, "\tcanary_1 = %s; (CANARY)\n", str_value);
+        fprintf(LogFile, "\tcanary_1 = %s; (STK_CANARY_1)\n", str_value);
 
         fprintf(LogFile, "\tdata = {\n");
 
         snprintf(str_value, sizeof(str_value), FORMAT_SPECIFIER(stk->data[0]), stk->data[0]);
-        fprintf(LogFile, "\t\t[0] = %s, (CANARY)\n", str_value);
+        fprintf(LogFile, "\t\t[0] = %s, (STK_CANARY_3)\n", str_value);
 
         for (ssize_t i = 1; i < stk->capacity - 1; ++i)
         {
             snprintf(str_value, sizeof(str_value), FORMAT_SPECIFIER(stk->data[i]), stk->data[i]);
-            fprintf(LogFile, "\t\t[%zd] = %s, %s\n", i, str_value, (i <= stk->size - 2) ? "": "(POISON)");
+            fprintf(LogFile, "\t\t[%zd] = %s, %s\n", i, str_value, (i <= stk->size - 2) ? "": "(STK_POISON)");
         }
 
         snprintf(str_value, sizeof(str_value), FORMAT_SPECIFIER(stk->data[stk->capacity - 1]), stk->data[stk->capacity - 1]);
-        fprintf(LogFile, "\t\t[%zd] = %s (CANARY)\n", stk->capacity - 1, str_value);
+        fprintf(LogFile, "\t\t[%zd] = %s (STK_CANARY_4)\n", stk->capacity - 1, str_value);
         fprintf(LogFile, "\t\t};\n");
 
         fprintf(LogFile, "\tsize = %zd;\n", stk->size);
@@ -56,7 +64,7 @@ StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func
         fprintf(LogFile, "\thash = %zx;\n", stk->hash);
 
         snprintf(str_value, sizeof(str_value), FORMAT_SPECIFIER(stk->canary_2), stk->canary_2);
-        fprintf(LogFile, "\tcanary_2 = %s; (CANARY)\n", str_value);
+        fprintf(LogFile, "\tcanary_2 = %s; (STK_CANARY_2)\n", str_value);
 
         fprintf(LogFile, "}\n");
 

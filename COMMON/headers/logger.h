@@ -27,7 +27,10 @@ int LogFileCloser();
             struct tm *timeinfo = localtime(&now); \
             char time_str[20] = {0}; \
             strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo); \
-            fprintf(LogFile, "[%s] %-5s %s:%d: ", time_str, verdict_strings[verdict], __FILE__, __LINE__); \
+            if (verdict == ERROR) \
+                fprintf(LogFile, "[%s] %-5s %s:%d: ", time_str, verdict_strings[verdict], __FILE__, __LINE__); \
+            else \
+                fprintf(LogFile, "[%s] %-5s ", time_str, verdict_strings[verdict]); \
             fprintf(LogFile, __VA_ARGS__); \
             fprintf(LogFile, "\n"); \
             fflush(LogFile); \

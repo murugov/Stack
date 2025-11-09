@@ -1,42 +1,50 @@
-[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:17: Created id for stack "&stk_1"
-[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:44: Hash updated
-[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:48: Stack "&stk_1" created
-[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:72: Hash updated
-[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:77: PUSH 1 in "&stk_1"
-[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:72: Hash updated
-[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:77: PUSH 2 in "&stk_1"
-[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:72: Hash updated
-[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:77: PUSH 3 in "&stk_1"
-[2025-11-09 03:03:30] ERROR ./STACK/headers/StackDump.hpp:15: STK_WRONG_HASH
-[2025-11-09 03:03:30] ERROR ./STACK/headers/StackDump.hpp:21: STK_WRONG_POISON_VAL
+[2025-11-09 03:52:36] DEBUG Created id for stack "stk_1"
+[2025-11-09 03:52:36] INFO  Hash updated
+[2025-11-09 03:52:36] INFO  Stack "stk_1" created
+[2025-11-09 03:52:36] INFO  Hash updated
+[2025-11-09 03:52:36] DEBUG PUSH 1 in "stk_1"
+[2025-11-09 03:52:36] INFO  Hash updated
+[2025-11-09 03:52:36] DEBUG PUSH 2 in "stk_1"
+[2025-11-09 03:52:36] INFO  Hash updated
+[2025-11-09 03:52:36] DEBUG PUSH 3 in "stk_1"
+[2025-11-09 03:52:36] ERROR ./STACK/headers/StackDump.hpp:15: STK_WRONG_HASH
+[2025-11-09 03:52:36] ERROR ./STACK/headers/StackDump.hpp:21: STK_WRONG_POISON_VAL
 ---------------------------------------------------------------------------------------------------------------------------
-DUMP stack "&stk_1" [0x16dcc2fa0] from StackPush at ./STACK/headers/StackFunc.hpp:57:
-{
-	canary_1 = 111; (CANARY)
+DUMP stack "stk_1" [0x16d676fa0] from StackPush at ./STACK/headers/StackFunc.hpp:57:
+
+STK_POISON = 777
+
+STK_CANARY_1 = 111
+STK_CANARY_2 = 222
+STK_CANARY_3 = 333
+STK_CANARY_4 = 444
+
+stk_1 {
+	canary_1 = 111; (STK_CANARY_1)
 	data = {
-		[0] = 333, (CANARY)
+		[0] = 333, (STK_CANARY_3)
 		[1] = 1, 
 		[2] = 2, 
 		[3] = 3, 
-		[4] = 777, (POISON)
-		[5] = 777, (POISON)
-		[6] = 777, (POISON)
-		[7] = 777, (POISON)
-		[8] = 777, (POISON)
-		[9] = 8, (POISON)
-		[10] = 777, (POISON)
-		[11] = 777, (POISON)
-		[12] = 777, (POISON)
-		[13] = 777, (POISON)
-		[14] = 777, (POISON)
-		[15] = 777, (POISON)
-		[16] = 777, (POISON)
-		[17] = 444 (CANARY)
+		[4] = 777, (STK_POISON)
+		[5] = 777, (STK_POISON)
+		[6] = 777, (STK_POISON)
+		[7] = 777, (STK_POISON)
+		[8] = 777, (STK_POISON)
+		[9] = 8, (STK_POISON)
+		[10] = 777, (STK_POISON)
+		[11] = 777, (STK_POISON)
+		[12] = 777, (STK_POISON)
+		[13] = 777, (STK_POISON)
+		[14] = 777, (STK_POISON)
+		[15] = 777, (STK_POISON)
+		[16] = 777, (STK_POISON)
+		[17] = 444 (STK_CANARY_4)
 		};
 	size = 5;
 	capacity = 18;
 	hash = feaf7ecc59138015;
-	canary_2 = 222; (CANARY)
+	canary_2 = 222; (STK_CANARY_2)
 }
 ---------------------------------------------------------------------------------------------------------------------------
-[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:147: Stack "&stk_1" destroed
+[2025-11-09 03:52:36] INFO  Stack "stk_1" destroed

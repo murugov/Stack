@@ -14,7 +14,7 @@
 
 #define MIN_STK_LEN 16
 #define MIN_NUM_STK 8
-#define POISON      777
+#define STK_POISON  777
 
 
 enum StackErr_t

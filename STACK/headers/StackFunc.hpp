@@ -9,7 +9,7 @@ StackErr_t StackInit(stk_t<stackElem_T> *stk, const char *name, const char *file
 {
     ON_DEBUG( if (IS_BAD_PTR(stk)) { LOG(ERROR, ERR_MSG_FORMAT("STK_BAD_STK_PTR"), ERR_MSG_PARAMS); return STK_ERROR; } )
     
-    (*stk).id.name = name;
+    (*stk).id.name = name + 1;
     (*stk).id.file = file;
     (*stk).id.func = func;
     (*stk).id.line = line;
@@ -36,7 +36,7 @@ StackErr_t StackCtor(stk_t<stackElem_T> *stk, ssize_t capacity)
 
     stk->data[0]                 = STK_CANARY_3;
     for (ssize_t i = 1; i < stk->capacity - 1; ++i)
-        stk->data[i] = POISON;
+        stk->data[i] = STK_POISON;
     stk->data[stk->capacity - 1] = STK_CANARY_4;
 
     stk->hash = HashFunc(stk);
@@ -89,7 +89,7 @@ StackErr_t StackPop(stk_t<stackElem_T> *stk, stackElem_T *last_value)
 
     stk->size--;
     *last_value = stk->data[stk->size - 1];
-    stk->data[stk->size - 1] = POISON;
+    stk->data[stk->size - 1] = STK_POISON;
 
     stk->hash = HashFunc(stk);
     ON_DEBUG( if(stk->hash == 0) { stk->error |= STK_WRONG_HASH; LOG(ERROR, ERR_MSG_FORMAT("STK_WRONG_HASH"), ERR_MSG_PARAMS); return STK_ERROR; } )
@@ -116,7 +116,7 @@ StackErr_t StackRealloc(stk_t<stackElem_T> *stk)
     if(IS_BAD_PTR(new_data)) { stk->error |= STK_WRONG_REALLOC; LOG(ERROR, ERR_MSG_FORMAT("STK_WRONG_REALLOC"), ERR_MSG_PARAMS); return STK_ERROR; }
 
     for (ssize_t i = stk->capacity - 1; i < new_capacity - 1; ++i)
-        new_data[i] = POISON;
+        new_data[i] = STK_POISON;
     
     new_data[new_capacity - 1] = STK_CANARY_4;
 
