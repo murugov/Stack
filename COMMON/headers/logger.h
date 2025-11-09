@@ -1,0 +1,37 @@
+#ifndef LOGGER_H
+#define LOGGER_H
+
+#include <stdio.h>
+#include <time.h>
+#include "IsBadPtr.h"
+
+extern FILE *LogFile;
+extern const char* verdict_strings[];
+
+enum log_verdict_t
+{
+    INFO  = 0x00,
+    DEBUG = 0x01,
+    WARN  = 0x02, 
+    ERROR = 0x03
+};
+
+int LogFileOpener(const char* path);
+int LogFileCloser();
+
+#define LOG(verdict, ...) \
+    do { \
+        if (!IsBadPtr((void*)LogFile)) \
+        { \
+            time_t now = time(NULL); \
+            struct tm *timeinfo = localtime(&now); \
+            char time_str[20] = {0}; \
+            strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo); \
+            fprintf(LogFile, "[%s] %-5s %s:%d: ", time_str, verdict_strings[verdict], __FILE__, __LINE__); \
+            fprintf(LogFile, __VA_ARGS__); \
+            fprintf(LogFile, "\n"); \
+            fflush(LogFile); \
+        } \
+    } while(0)
+
+#endif
