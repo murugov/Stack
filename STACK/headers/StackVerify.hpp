@@ -1,12 +1,11 @@
 #include "stack.h"
-#include "hash.h"
 
 #ifndef STACK_VERIF_HPP
 #define STACK_VERIF_HPP
 
 
 template <typename stackElem_T>
-StackErr_t ErrDetect(stk_t<stackElem_T> *stk, StackFunc IncomingFunc, const char *file, const char *func, size_t line)
+StackErr_t ErrDetect(stk_t<stackElem_T> *stk, StackFunc IncomingFunc, const char *file, const char *func, int line)
 {
     ON_DEBUG( if (IS_BAD_PTR(stk)) { LOG(ERROR, ERR_MSG_FORMAT("STK_BAD_STK_PTR"), ERR_MSG_PARAMS); return STK_ERROR; } )
 
@@ -27,7 +26,7 @@ StackErr_t StackVerify(stk_t<stackElem_T> *stk, StackFunc IncomingFunc)
     if (stk->canary_1 != STK_CANARY_1 || stk->canary_2 != STK_CANARY_2)
         stk->error |= STK_WRONG_CANARY;
 
-    if (HashFunc(stk) != stk_hash_arr[stk->hash_index])
+    if (HashFunc(stk) != stk->hash)
         stk->error |= STK_WRONG_HASH;
 
     if (IS_BAD_PTR(stk->data))
@@ -45,8 +44,16 @@ StackErr_t StackVerify(stk_t<stackElem_T> *stk, StackFunc IncomingFunc)
     if (stk->capacity < 2)
         stk->error |= STK_WRONG_CAPACITY;
 
-    if (ERR_CHECK(STK_BAD_DATA_PTR) == 0 && (stk->data[0] != STK_CANARY_3 || (ERR_CHECK(STK_WRONG_CAPACITY) == 0 && stk->data[stk->capacity - 1] != STK_CANARY_4)))
+    if (ERR_CHECK(STK_BAD_DATA_PTR) == STK_NO_ERRORS && (stk->data[0] != STK_CANARY_3 || (ERR_CHECK(STK_WRONG_CAPACITY) == STK_NO_ERRORS && stk->data[stk->capacity - 1] != STK_CANARY_4)))
         stk->error |= STK_WRONG_CANARY;
+
+    if (ERR_CHECK((STK_BAD_DATA_PTR | STK_WRONG_SIZE | STK_WRONG_CAPACITY)) == STK_NO_ERRORS)
+    {
+        for(ssize_t i = stk->size - 1; i < stk->capacity - 1; ++i)
+        {
+            if (stk->data[i] != POISON) { stk->error |= STK_WRONG_POISON_VAL; break; }
+        }
+    }
 
     return (stk->error != STK_NO_ERRORS) ? STK_ERROR : STK_SUCCESS;
 }

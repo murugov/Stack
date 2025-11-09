@@ -5,13 +5,12 @@ CONFIG_INCLUDES = -I./CONFIG
 STK_INCLUDES    = -I./STACK/headers
 
 COMMON_FILES   = COMMON/IsBadPtr.cpp COMMON/logger.cpp
-STK_FILES      = STACK/HashFunc.cpp
 
 all: help
 
-stk: main.cpp $(COMMON_FILES) $(STK_FILES)
+stk: main.cpp $(COMMON_FILES)
 	@echo "-----------------------------------------------------------------------------------------"
-	g++ -o stk_program $(FLAGS) main.cpp $(COMMON_INCLUDES) $(CONFIG_INCLUDES) $(STK_INCLUDES) $(COMMON_FILES) $(STK_FILES)
+	g++ -o stk_program $(FLAGS) main.cpp $(COMMON_INCLUDES) $(CONFIG_INCLUDES) $(STK_INCLUDES) $(COMMON_FILES)
 	@echo "-----------------------------------------------------------------------------------------"
 
 run-stk: stk
@@ -32,4 +31,4 @@ help:
 	@echo ""
 	@echo "  make clean                    - remove compiled programs"
 
-.PHONY: list run-stk run clean help
+.PHONY: stk run-stk run clean help

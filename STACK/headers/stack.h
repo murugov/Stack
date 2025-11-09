@@ -14,6 +14,7 @@
 
 #define MIN_STK_LEN 16
 #define MIN_NUM_STK 8
+#define POISON      777
 
 
 enum StackErr_t
@@ -32,10 +33,11 @@ enum StackErrCodes_t
     STK_BAD_DATA_PTR      = 1 << 4,
     STK_WRONG_SIZE        = 1 << 5,
     STK_WRONG_CAPACITY    = 1 << 6,
-    STK_DATA_OVERFLOW     = 1 << 7,
-    STK_ACCESS_EMPTY_DATA = 1 << 8,
-    STK_WRONG_REALLOC     = 1 << 9,
-    STK_DESTROYED         = 1 << 10
+    STK_WRONG_REALLOC     = 1 << 7,
+    STK_WRONG_POISON_VAL  = 1 << 8,
+    STK_DATA_OVERFLOW     = 1 << 9,
+    STK_ACCESS_EMPTY_DATA = 1 << 10,
+    STK_DESTROYED         = 1 << 11
 };
 
 enum StackFunc
@@ -56,8 +58,11 @@ enum StackCanary
     STK_CANARY_4 = 444
 };
 
-typedef size_t     stk_err_t;
+
+typedef size_t stk_err_t;
 typedef size_t stk_canary_t;
+typedef size_t stk_hash_t;
+
 
 struct stack_id
 {
@@ -70,22 +75,25 @@ struct stack_id
 template <typename T>
 struct stk_t
 {
-    stk_canary_t    canary_1;
-    T               *data;
-    ssize_t         size;
-    ssize_t         capacity;
-    stk_err_t       error;
-    struct stack_id id;
-    stk_canary_t    canary_2;
-    size_t          hash_index;
+    stk_canary_t canary_1;
+    T            *data;
+    ssize_t      size;
+    ssize_t      capacity;
+    stk_err_t    error;
+    stack_id     id;
+    stk_hash_t   hash;
+    stk_canary_t canary_2;
 };
 
 
 template <typename stackElem_T>
-StackErr_t StackInit(stk_t<stackElem_T> *stk, const char *name, const char *file, const char *func, size_t line);
+    stk_hash_t HashFunc(stk_t<stackElem_T> *stk);
 
 template <typename stackElem_T>
-StackErr_t ErrDetect(stk_t<stackElem_T> *stk, StackFunc IncomingFunc, const char *file, const char *func, size_t line);
+StackErr_t StackInit(stk_t<stackElem_T> *stk, const char *name, const char *file, const char *func, int line);
+
+template <typename stackElem_T>
+StackErr_t ErrDetect(stk_t<stackElem_T> *stk, StackFunc IncomingFunc, const char *file, const char *func, int line);
 
 template <typename stackElem_T>
 StackErr_t StackCtor(stk_t<stackElem_T> *stk, ssize_t capacity);
@@ -94,7 +102,7 @@ template <typename stackElem_T>
 StackErr_t StackDtor(stk_t<stackElem_T> *stk);
 
 template <typename stackElem_T>
-void StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func, size_t line);
+StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func, int line);
 
 template <typename stackElem_T>
 StackErr_t StackPush(stk_t<stackElem_T> *stk, const stackElem_T value);
@@ -115,8 +123,8 @@ StackErr_t StackVerify(stk_t<stackElem_T> *stk, StackFunc IncomingFunc = DEFUALT
 #define ERR_MSG_FORMAT(name) name " in %s:%d: from %s"
 #define ERR_MSG_PARAMS __FILE__, __LINE__, __func__
 
-#include "../StackFunc.hpp"
-#include "../StackDump.hpp"
-#include "../StackVerify.hpp"
+#include "StackFunc.hpp"
+#include "StackDump.hpp"
+#include "StackVerify.hpp"
 
 #endif

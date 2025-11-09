@@ -1,19 +1,42 @@
+[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:17: Created id for stack "&stk_1"
+[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:44: Hash updated
+[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:48: Stack "&stk_1" created
+[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:72: Hash updated
+[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:77: PUSH 1 in "&stk_1"
+[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:72: Hash updated
+[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:77: PUSH 2 in "&stk_1"
+[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:72: Hash updated
+[2025-11-09 03:03:30] DEBUG ./STACK/headers/StackFunc.hpp:77: PUSH 3 in "&stk_1"
+[2025-11-09 03:03:30] ERROR ./STACK/headers/StackDump.hpp:15: STK_WRONG_HASH
+[2025-11-09 03:03:30] ERROR ./STACK/headers/StackDump.hpp:21: STK_WRONG_POISON_VAL
 ---------------------------------------------------------------------------------------------------------------------------
-
-ListDump() from main at LIST/main_list.cpp:18:
-List <int> "list_1" [0x16d672f80] from LIST/main_list.cpp:8:
-
-POISON = 777
-first_free = 2
-
-data[0x603000001bd0]:
-	[777, 1, 777, 3, 777, 777, 777, 777]
-
-next[0x606000000320]:
-	[1, 3, 4, 0, 5, 6, 7, 0]
-
-prev[0x606000000380]:
-	[3, 0, -1, 1, -1, -1, -1, -1]
-
+DUMP stack "&stk_1" [0x16dcc2fa0] from StackPush at ./STACK/headers/StackFunc.hpp:57:
+{
+	canary_1 = 111; (CANARY)
+	data = {
+		[0] = 333, (CANARY)
+		[1] = 1, 
+		[2] = 2, 
+		[3] = 3, 
+		[4] = 777, (POISON)
+		[5] = 777, (POISON)
+		[6] = 777, (POISON)
+		[7] = 777, (POISON)
+		[8] = 777, (POISON)
+		[9] = 8, (POISON)
+		[10] = 777, (POISON)
+		[11] = 777, (POISON)
+		[12] = 777, (POISON)
+		[13] = 777, (POISON)
+		[14] = 777, (POISON)
+		[15] = 777, (POISON)
+		[16] = 777, (POISON)
+		[17] = 444 (CANARY)
+		};
+	size = 5;
+	capacity = 18;
+	hash = feaf7ecc59138015;
+	canary_2 = 222; (CANARY)
+}
 ---------------------------------------------------------------------------------------------------------------------------
-
+[2025-11-09 03:03:30] INFO  ./STACK/headers/StackFunc.hpp:147: Stack "&stk_1" destroed

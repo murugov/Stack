@@ -9,9 +9,6 @@ StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func
 {
     ON_DEBUG( if (IS_BAD_PTR(stk)) { LOG(ERROR, ERR_MSG_FORMAT("STK_BAD_STK_PTR"), ERR_MSG_PARAMS); return STK_ERROR; } )
 
-    fprintf(LogFile, "---------------------------------------------------------------------------------------------------------------------------\n\n");
-    
-    LOG(ERROR, "");
     #define PRINT_ERRCODE_(code) do { if (ERR_CHECK(code) == STK_ERROR) LOG(ERROR, #code); } while(0)
 
     PRINT_ERRCODE_(STK_WRONG_CANARY);
@@ -20,17 +17,18 @@ StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func
     PRINT_ERRCODE_(STK_BAD_DATA_PTR);
     PRINT_ERRCODE_(STK_WRONG_SIZE);
     PRINT_ERRCODE_(STK_WRONG_CAPACITY);
+    PRINT_ERRCODE_(STK_WRONG_REALLOC);
+    PRINT_ERRCODE_(STK_WRONG_POISON_VAL);
     PRINT_ERRCODE_(STK_DATA_OVERFLOW);
     PRINT_ERRCODE_(STK_ACCESS_EMPTY_DATA);
-    PRINT_ERRCODE_(STK_WRONG_REALLOC);
 
     #undef PRINT_ERRCODE_
 
     if (ERR_CHECK(STK_BAD_DATA_PTR) == STK_NO_ERRORS && stk->capacity > 2 && stk->size > 2)
     {
-        char str_value[32] = {0};
-
         fprintf(LogFile, "---------------------------------------------------------------------------------------------------------------------------\n");
+
+        char str_value[32] = {0};
 
         fprintf(LogFile, "DUMP stack \"%s\" [%p] from %s at %s:%d:\n", stk->id.name, stk, func, file, line);
         fprintf(LogFile, "{\n");
@@ -55,6 +53,7 @@ StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func
 
         fprintf(LogFile, "\tsize = %zd;\n", stk->size);
         fprintf(LogFile, "\tcapacity = %zd;\n", stk->capacity);
+        fprintf(LogFile, "\thash = %zx;\n", stk->hash);
 
         snprintf(str_value, sizeof(str_value), FORMAT_SPECIFIER(stk->canary_2), stk->canary_2);
         fprintf(LogFile, "\tcanary_2 = %s; (CANARY)\n", str_value);
@@ -63,7 +62,7 @@ StackErr_t StackDump(stk_t<stackElem_T> *stk, const char *file, const char *func
 
         fprintf(LogFile, "---------------------------------------------------------------------------------------------------------------------------\n");
     }
-
+        
     return STK_SUCCESS;
 }
 
